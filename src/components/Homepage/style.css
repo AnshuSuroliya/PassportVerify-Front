@@ -1,0 +1,5 @@
+.custom-background{
+    background-image:  url('../../images/homepage.jpg'),linear-gradient(to right,rgba(20,20,19),rgba(233,240,227));
+    background-size: cover;
+    background-position: center;
+}
