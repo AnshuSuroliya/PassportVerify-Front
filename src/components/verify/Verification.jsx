@@ -30,17 +30,71 @@ const Verification=()=>{
     }
      
     const [openPicker,authResponse]=useDrivePicker();
-    const handleClick=()=>{
-        openPicker({
-            clientId:"414452798257-2upm2aj9ai85a3ttccnhj9n5b1lq8lod.apps.googleusercontent.com",
-            developerKey:"AIzaSyDV8GcHfZqQBxLZdo6evrfjhsqMRftqhTA",
-            viewId:"DOCS",
-            showUploadView:true,
-            showUploadFolders:true,
-            supportDrives:true,
-            multiselect:true
-        })
-    }
+    const handleClick=()=> {
+        // Load Google API client library
+        const script = document.createElement('script');
+    script.src = 'https://apis.google.com/js/api.js';
+        script.onload = () => {
+          initializePicker();
+        };
+        document.body.appendChild(script);
+     
+        return () => {
+          document.body.removeChild(script);
+        }
+      }
+     
+      const initializePicker = () => {
+        window.gapi.load('picker', { callback: createPicker });
+      };
+      const createPicker = () => {
+        const picker = new window.google.picker.PickerBuilder()
+        .addView(window.google.picker.ViewId.DOCS)
+              .setOAuthToken('414452798257-2upm2aj9ai85a3ttccnhj9n5b1lq8lod.apps.googleusercontent.com')
+              .setDeveloperKey('AIzaSyDV8GcHfZqQBxLZdo6evrfjhsqMRftqhTA')
+              .setCallback(pickerCallback)
+              .build();
+            picker.setVisible(true);
+          };
+    // const handleClick=()=>{
+    //     openPicker({
+    //         clientId:"414452798257-2upm2aj9ai85a3ttccnhj9n5b1lq8lod.apps.googleusercontent.com",
+    //         developerKey:"AIzaSyDV8GcHfZqQBxLZdo6evrfjhsqMRftqhTA",
+    //         viewId:"DOCS",
+    //         showUploadView:true,
+    //         showUploadFolders:true,
+    //         supportDrives:true,
+    //         multiselect:true
+    //     })
+       
+    // }
+    const pickerCallback = (data) => {
+        if (data.action === window.google.picker.Action.PICKED) {
+        const fileId = data.docs[0].id;
+              downloadFile(fileId);
+            }
+          };
+    const downloadFile = (fileId) => {
+        const accessToken = window.gapi.auth.getToken().access_token;
+        axios({
+    url: `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,
+          method: 'GET',
+          responseType: 'blob',
+          headers: {
+            'Authorization': `Bearer ${accessToken}`
+          }
+        }).then(response => {
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', 'downloaded_file.txt');
+          document.body.appendChild(link);
+    link.click();
+          link.remove();
+        }).catch(error => {
+          console.error('Error downloading the file:', error);
+        });
+      };
 return(
     <div>
         <div className="flex justify-center mt-24">
@@ -77,9 +131,8 @@ return(
                     Register
                 </button>
                 </div>
-            </form>
-                
-            </div>
+            </form> 
+        </div>
     </div>
 )
 }
