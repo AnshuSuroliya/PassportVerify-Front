@@ -1,4 +1,14 @@
+import { useNavigate } from "react-router-dom";
+
 const Body=()=>{
+    const navigate=useNavigate();
+    const jwt=localStorage.getItem("jwt");
+    const handleClick=()=>{
+        if(jwt==null){
+            navigate("/login");
+        }
+        else navigate("/verification");
+    }
     return(
         <div>
         <div className="flex flex-row w-full m-4 py-10">
@@ -14,7 +24,7 @@ const Body=()=>{
                     Verify your passport in real time without compromising security and privacy.
                 </div>
                 <div className="mt-4">
-                    <button className="bg-lime-500 rounded-full px-6 py-3 text-white">Verify Now</button>
+                    <button className="bg-stone-950 rounded-full px-6 py-3 text-white font-bold" onClick={handleClick}>Verify Now</button>
                 </div>
             </div>
         </div>
