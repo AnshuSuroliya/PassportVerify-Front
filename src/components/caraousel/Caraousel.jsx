@@ -5,18 +5,18 @@ const Caraousel=()=>{
   return (
     <div className="mt-16">
       <TECarousel showControls showIndicators ride="carousel">
-        <div className="w-full overflow-hidden after:clear-both after:block after:content-['']">
+        <div className="w-full h-96 overflow-hidden after:clear-both after:block after:content-['']">
           <TECarouselItem
             itemID={1}
             className="float-left -mr-[100%] hidden w-full transition-transform duration-[600ms] ease-in-out motion-reduce:transition-none"
           >
             <img
-              src=""
-              className=""
+              src="https://wise.com/imaginary/f905e44b2f3d06bd540428f5d202a849.jpg"
+              className="block w-full"
               
             />
             <div className="absolute inset-x-[15%] bottom-5 hidden py-5 text-center text-white md:block">
-            <div className="w-full h-full px-5 py-36">
+            <div className="w-full h-full px-5">
     
         <h1 className="text-7xl text-white font-serif">Welcome to PassportPro</h1>
         </div> 
@@ -30,7 +30,7 @@ const Caraousel=()=>{
             className="relative float-left hidden -mr-[100%] w-full transition-transform duration-[600ms] ease-in-out motion-reduce:transition-none"
           >
             <img
-              src="https://tecdn.b-cdn.net/img/Photos/Slides/img%20(22).jpg"
+              src="https://www.passportindia.gov.in/AppOnlineProject/images/5years/slide5.JPG"
               className="w-full"
               alt="..."
               
@@ -47,7 +47,7 @@ const Caraousel=()=>{
             className="relative float-left -mr-[100%] hidden w-full transition-transform duration-[600ms] ease-in-out motion-reduce:transition-none"
           >
             <img
-              src="https://tecdn.b-cdn.net/img/Photos/Slides/img%20(23).jpg"
+              src="https://portal1.passportindia.gov.in/AppOnlineProject/images/5years/slide4.JPG"
               className="block w-full"
               alt="..."
             />
