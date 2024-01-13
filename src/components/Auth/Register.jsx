@@ -51,7 +51,7 @@ const Register=()=>{
         }
     }
     const handleChange3=(e)=>{
-        const rgExp=/^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/
+        const rgExp=/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$/
         setData({ ...data, [e.target.name]: e.target.value });
         if(rgExp.test(data.email))
         {
@@ -81,6 +81,7 @@ const Register=()=>{
           setMessage4("Number is not valid")
           setValid1(false);
         }
+        
         else{
           setMessage4("");
         }
@@ -106,10 +107,11 @@ const Register=()=>{
         e.preventDefault();
         console.log(data);
         dispatch(registerUser(data));
+        if(registerData.message=="User Registered Successfully" || registerData.message=="User Already Present"){
         setTimeout(()=>{
           navigate("/login");
         },1000)
-        
+      }
     }
 return(
 <div className="bg-gradient-to-br from-gray-300 to-gray-100 w-full py-1">
@@ -153,7 +155,9 @@ return(
         </p>
                 </div>
                 }
-                
+                <div className="flex justify-center mt-2">
+                    <p className="text-red-500">{registerData.message}</p>
+                    </div>
                 <div className="flex justify-center mt-8 mb-4">
                 <button class={`flex-shrink-0 bg-teal-500 hover:bg-teal-700 border-teal-500 hover:border-teal-700 text-sm border-4 text-white py-1 px-2 rounded  ${!valid1 ? 'opacity-50 cursor-not-allowed hover:none' : ''}`} type="submit" disabled={!valid1}>
                     Sign Up

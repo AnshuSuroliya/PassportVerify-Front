@@ -13,7 +13,7 @@ const Login=()=>{
     const [valid,setValid]=useState(true);
     const[message,setMessage]=useState("");
     const checkValidation=(e)=>{
-        const rgExp=/^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/
+        const rgExp=/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$/
         setData({ ...data, [e.target.name]: e.target.value });
         if(rgExp.test(data.email))
         {
@@ -73,7 +73,7 @@ const Login=()=>{
             <input name="password" required className="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-rounded outline-blue-500 text-center" type="password" placeholder="Password" onChange={handleChange}/>
                 </div>
                 <div className="flex justify-center mt-6">
-                    <p className="text-green-500">{loginData.message}</p>
+                    <p className="text-red-500">{loginData.message}</p>
                     </div>
                     <div className="flex justify-center mt-2">
                 <button className={`flex-shrink-0 bg-teal-500 hover:bg-teal-700 border-teal-500 hover:border-teal-700 text-sm border-4 text-white py-1 px-2 rounded ${!valid ? 'opacity-50 cursor-not-allowed hover:none' : ''}`} type="submit" disabled={!valid}>

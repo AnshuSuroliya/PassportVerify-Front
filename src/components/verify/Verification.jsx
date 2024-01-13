@@ -27,7 +27,7 @@ const Verification=()=>{
     const navigate=useNavigate();
     const passportData=useSelector((state)=>state.verify.PassportData);
     const checkValidation=(e)=>{
-        const rgExp=/^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/
+        const rgExp=/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$/
         setData({ ...data, [e.target.name]: e.target.value });
         if(rgExp.test(data.email))
         {
@@ -168,7 +168,7 @@ const Verification=()=>{
           setMessage5("");
         }
       }
-      const regEx3=/^[a-zA-Z0-9]+$/
+      const regEx3=/^[a-zA-Z0-9\s.,#-]+$/
       const handleChange7=(e)=>{
         setData({ ...data, [e.target.name]: e.target.value });
         if(regEx3.test(data.addressLine1 && data.addressLine2))
@@ -270,86 +270,87 @@ const [pickerInited, setPickerInited] = useState(false);
   let tokenClient;
   const [accessToken, setAccessToken] = useState(null);
   
-const handleClick =  () => {
+// const handleButtonClick =  () => {
  
 
  
-    // Function to handle the loading of picker API
-    const onPickerApiLoad = () => {
-      setPickerInited(true);
-    };
+  //   // Function to handle the loading of picker API
+  //   const onPickerApiLoad = () => {
+  //     setPickerInited(true);
+  //   };
   
 
-    // Function to handle the initialization of GSI (Google Sign-In)
-    const gisLoaded = () => {
-      tokenClient = window.google.accounts.oauth2.initTokenClient({
-        client_id: 'YOUR_CLIENT_ID',
-        scope: 'YOUR_SCOPES',
-        callback: handleTokenCallback,
-      });
-      setGisInited(true);
-    };
+  //   // Function to handle the initialization of GSI (Google Sign-In)
+  //   const gisLoaded = () => {
+  //     tokenClient = window.google.accounts.oauth2.initTokenClient({
+  //       client_id: '414452798257-2upm2aj9ai85a3ttccnhj9n5b1lq8lod.apps.googleusercontent.com',
+  //       scope: 'https://www.googleapis.com/auth/drive.readonly',
+  //       callback: handleTokenCallback,
+  //     });
+  //     setGisInited(true);
+  //   };
 
-    // Load Google API script
-    if (!window.gapi) {
-      const script = document.createElement('script');
-      script.src = 'https://apis.google.com/js/api.js';
-      script.async = true;
-      script.defer = true;
-      script.onload = onPickerApiLoad;
-      document.body.appendChild(script);
-    } else {
-      onPickerApiLoad();
-    }
+  //   // Load Google API script
+  //   if (!window.gapi) {
+  //     const script = document.createElement('script');
+  //     script.src = 'https://apis.google.com/js/api.js';
+  //     script.async = true;
+  //     script.defer = true;
+  //     script.onload = onPickerApiLoad;
+  //     document.body.appendChild(script);
+  //   } else {
+  //     onPickerApiLoad();
+  //   }
 
-    // Load GSI script
-    if (!window.google || !window.google.accounts) {
-      const gsiScript = document.createElement('script');
-      gsiScript.src = 'https://accounts.google.com/gsi/client';
-      gsiScript.async = true;
-      gsiScript.defer = true;
-      gsiScript.onload = gisLoaded;
-      document.body.appendChild(gsiScript);
-    } else {
-      gisLoaded();
-    }
-  };
+  //   // Load GSI script
+  //   if (!window.google || !window.google.accounts) {
+  //     const gsiScript = document.createElement('script');
+  //     gsiScript.src = 'https://accounts.google.com/gsi/client';
+  //     gsiScript.async = true;
+  //     gsiScript.defer = true;
+  //     gsiScript.onload = gisLoaded;
+  //     document.body.appendChild(gsiScript);
+  //   } else {
+  //     gisLoaded();
+  //   }
+  // };
 
-  const handleTokenCallback = async (response) => {
-    if (response.error !== undefined) {
-      throw response;
-    }
-    setAccessToken(response.access_token);
-  };
+  // const handleTokenCallback = async (response) => {
+  //   if (response.error !== undefined) {
+  //     throw response;
+  //   }
+  //   setAccessToken(response.access_token);
+  //   console.log(accessToken);
+  // };
 
-  const createPicker = () => {
-    const showPicker = () => {
-      const picker = new window.google.picker.PickerBuilder()
-        .addView(window.google.picker.ViewId.DOCS)
-        .setOAuthToken(accessToken)
-        .setDeveloperKey('YOUR_API_KEY')
-        .setCallback(pickerCallback)
-        .build();
-      picker.setVisible(true);
-    };
+  // const createPicker = () => {
+  //   const showPicker = () => {
+  //     const picker = new window.google.picker.PickerBuilder()
+  //       .addView(window.google.picker.ViewId.DOCS)
+  //       .setOAuthToken(accessToken)
+  //       .setDeveloperKey('AIzaSyDV8GcHfZqQBxLZdo6evrfjhsqMRftqhTA')
+  //       .setCallback(pickerCallback)
+  //       .build();
+  //     picker.setVisible(true);
+  //   };
 
-    if (accessToken === null) {
-      tokenClient.requestAccessToken({ prompt: 'consent' });
-    } else {
-      tokenClient.requestAccessToken({ prompt: '' });
-    }
+  //   if (accessToken === null) {
+  //     tokenClient.requestAccessToken({ prompt: 'consent' });
+  //   } else {
+  //     tokenClient.requestAccessToken({ prompt: '' });
+  //   }
 
-    showPicker();
-  };
+  //   showPicker();
+  // };
 
-  const pickerCallback = (data) => {
-    let url = 'nothing';
-    if (data[window.google.picker.Response.ACTION] === window.google.picker.Action.PICKED) {
-      const doc = data[window.google.picker.Response.DOCUMENTS][0];
-      url = doc[window.google.picker.Document.URL];
-    }
-    document.getElementById('result').innerText = `You picked: ${url}`;
-  };
+  // const pickerCallback = (data) => {
+  //   let url = 'nothing';
+  //   if (data[window.google.picker.Response.ACTION] === window.google.picker.Action.PICKED) {
+  //     const doc = data[window.google.picker.Response.DOCUMENTS][0];
+  //     url = doc[window.google.picker.Document.URL];
+  //   }
+  //   document.getElementById('result').innerText = `You picked: ${url}`;
+  // };
   
  
 
@@ -866,10 +867,9 @@ return(
                 </button>
                 </div>
             </form> 
-            <div className="flex justify-center mt-1">
-                 
-                    <button onClick={handleClick}><img src="https://th.bing.com/th/id/OIP.lgdmCc6UHAWc27h0o4tSbwHaHa?rs=1&pid=ImgDetMain" height="50" width="50" type="button"/></button>
-                </div>
+            <div>
+      
+    </div>
         </div>
         <Footer/>
     </div>

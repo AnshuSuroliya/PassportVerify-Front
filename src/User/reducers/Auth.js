@@ -30,8 +30,7 @@ export const loginUser=createAsyncThunk("loginUser", async(data,{rejectWithValue
         if(result.success){
         const jwt=result.jwt;
         localStorage.setItem("jwt",jwt);
-        localStorage.setItem("id",result.id);
-        
+        localStorage.setItem("success",result.success);
         }
         return result;
     } catch(error){
@@ -60,7 +59,7 @@ const registerSlice=createSlice({
             })
        .addCase(registerUser.fulfilled,(state,action)=>{
                 state.isLoading=false;
-                state.user.push(action.payload);
+                state.user=(action.payload);
         })
         .addCase(registerUser.rejected,(state,action)=>{
             state.isLoading=false;
