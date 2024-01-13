@@ -23,7 +23,7 @@ const Verification=()=>{
     const [message7,setMessage7]=useState();
     const [message8,setMessage8]=useState();
     const [message9,setMessage9]=useState();
-    const [valid,setValid]=useState();
+    const [valid,setValid]=useState(true);
     const navigate=useNavigate();
     const passportData=useSelector((state)=>state.verify.PassportData);
     const checkValidation=(e)=>{
@@ -32,15 +32,13 @@ const Verification=()=>{
         if(rgExp.test(data.email))
         {
           setMessage("")
-         
+          setValid(true);
         }
-        else if(data.email==="")
-        {
-          setMessage("Please Enter email")
-        }
+       
         else if(!rgExp.test(data.email))
         {
           setMessage("Email is not valid")
+          setValid(false);
         }
         else{
           setMessage("");
@@ -53,11 +51,13 @@ const Verification=()=>{
         if(regEx.test(data.firstName))
         {
           setMessage1("")
+          setValid(true);
         }
         
         else if(!regEx.test(data.firstName))
         {
           setMessage1("First Name is not valid")
+          setValid(false);
         }
         else{
           setMessage1("");
@@ -69,11 +69,13 @@ const Verification=()=>{
         if(regEx.test(data.lastName))
         {
           setMessage9("")
+          setValid(true);
         }
         
         else if(!regEx.test(data.lastName))
         {
           setMessage9("Last Name is not valid")
+          setValid(false);
         }
         else{
           setMessage9("");
@@ -85,14 +87,13 @@ const Verification=()=>{
         if(regEx2.test(data.phoneNumber))
         {
           setMessage2("")
+          setValid(true);
         }
-        else if(data.phoneNumber==="")
-        {
-          setMessage2("Please Enter Number")
-        }
+       
         else if(!regEx2.test(data.phoneNumber))
         {
           setMessage2("Number is not valid")
+          setValid(false);
         }
         else{
           setMessage2("");
@@ -103,14 +104,13 @@ const Verification=()=>{
         if(regEx2.test(data.zipcode))
         {
           setMessage3("")
+          setValid(true);
         }
-        else if(data.zipcode==="")
-        {
-          setMessage3("Please Enter Zipcode")
-        }
+        
         else if(!regEx2.test(data.zipcode))
         {
           setMessage3("Zipcode is not valid")
+          setValid(false);
         }
         else{
           setMessage3("");
@@ -121,14 +121,13 @@ const Verification=()=>{
         if(regEx2.test(data.age))
         {
           setMessage4("")
+          setValid(true);
         }
-        else if(data.age==="")
-        {
-          setMessage4("Please Enter Age")
-        }
+        
         else if(!regEx2.test(data.age))
         {
           setMessage4("Age is not valid")
+          setValid(false);
         }
         else{
           setMessage4("");
@@ -140,14 +139,13 @@ const Verification=()=>{
         if(regEx.test(data.city))
         {
           setMessage5("")
+          setValid(true);
         }
-        else if(data.city==="")
-        {
-          setMessage5("Please Enter City")
-        }
+        
         else if(!regEx.test(data.city))
         {
           setMessage5("City is not valid")
+          setValid(false);
         }
         else{
           setMessage5("");
@@ -158,14 +156,13 @@ const Verification=()=>{
         if(regEx.test(data.state))
         {
           setMessage6("")
+          setValid(true);
         }
-        else if(data.state==="")
-        {
-          setMessage6("Please Enter State")
-        }
+        
         else if(!regEx.test(data.state))
         {
           setMessage6("State is not valid")
+          setValid(false);
         }
         else{
           setMessage5("");
@@ -177,11 +174,13 @@ const Verification=()=>{
         if(regEx3.test(data.addressLine1 && data.addressLine2))
         {
           setMessage7("")
+          setValid(true);
         }
         
         else if(!regEx3.test(data.addressLine1 || data.addressLine2))
         {
           setMessage7("Address is not valid")
+          setValid(false);
         }
         else{
           setMessage7("");
@@ -193,11 +192,13 @@ const Verification=()=>{
         if(regEx4.test(data.passportNumber))
         {
           setMessage8("")
+          setValid(true);
         }
         
         else if(!regEx4.test(data.passportNumber))
         {
           setMessage8("Passport Number is not valid")
+          setValid(false);
         }
         else{
           setMessage8("");
@@ -219,6 +220,8 @@ const Verification=()=>{
       const file=e.target.files[0];
       setData({...data,passportDoc:file});
     }
+    const [button,setButton]=useState(false);
+
     const handleSubmit=(e)=>{
         e.preventDefault();
         console.log(data);
@@ -251,7 +254,260 @@ const Verification=()=>{
     const [isFetchingGoogleDriveFiles,setIsFetchingGoogleDriveFiles]=useState(false);
     const [listDocumentsVisibility,setListDocumentsVisibility]=useState(false);
     const [documents,setDocuments]=useState(false);
-     const handleClick=()=> {
+    const CLIENT_ID = '414452798257-2upm2aj9ai85a3ttccnhj9n5b1lq8lod.apps.googleusercontent.com'; 
+const API_KEY = 'AIzaSyDV8GcHfZqQBxLZdo6evrfjhsqMRftqhTA'; 
+const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
+const SCOPES = 'https://www.googleapis.com/auth/drive.readonly';
+const DRIVE_FILE_ID = 'YOUR_DRIVE_FILE_ID';
+
+
+
+let isGapiLoaded = false; // Flag to check if gapi is loaded
+
+const [pickerInited, setPickerInited] = useState(false);
+  const [gisInited, setGisInited] = useState(false);
+  
+  let tokenClient;
+  const [accessToken, setAccessToken] = useState(null);
+  
+const handleClick =  () => {
+ 
+
+ 
+    // Function to handle the loading of picker API
+    const onPickerApiLoad = () => {
+      setPickerInited(true);
+    };
+  
+
+    // Function to handle the initialization of GSI (Google Sign-In)
+    const gisLoaded = () => {
+      tokenClient = window.google.accounts.oauth2.initTokenClient({
+        client_id: 'YOUR_CLIENT_ID',
+        scope: 'YOUR_SCOPES',
+        callback: handleTokenCallback,
+      });
+      setGisInited(true);
+    };
+
+    // Load Google API script
+    if (!window.gapi) {
+      const script = document.createElement('script');
+      script.src = 'https://apis.google.com/js/api.js';
+      script.async = true;
+      script.defer = true;
+      script.onload = onPickerApiLoad;
+      document.body.appendChild(script);
+    } else {
+      onPickerApiLoad();
+    }
+
+    // Load GSI script
+    if (!window.google || !window.google.accounts) {
+      const gsiScript = document.createElement('script');
+      gsiScript.src = 'https://accounts.google.com/gsi/client';
+      gsiScript.async = true;
+      gsiScript.defer = true;
+      gsiScript.onload = gisLoaded;
+      document.body.appendChild(gsiScript);
+    } else {
+      gisLoaded();
+    }
+  };
+
+  const handleTokenCallback = async (response) => {
+    if (response.error !== undefined) {
+      throw response;
+    }
+    setAccessToken(response.access_token);
+  };
+
+  const createPicker = () => {
+    const showPicker = () => {
+      const picker = new window.google.picker.PickerBuilder()
+        .addView(window.google.picker.ViewId.DOCS)
+        .setOAuthToken(accessToken)
+        .setDeveloperKey('YOUR_API_KEY')
+        .setCallback(pickerCallback)
+        .build();
+      picker.setVisible(true);
+    };
+
+    if (accessToken === null) {
+      tokenClient.requestAccessToken({ prompt: 'consent' });
+    } else {
+      tokenClient.requestAccessToken({ prompt: '' });
+    }
+
+    showPicker();
+  };
+
+  const pickerCallback = (data) => {
+    let url = 'nothing';
+    if (data[window.google.picker.Response.ACTION] === window.google.picker.Action.PICKED) {
+      const doc = data[window.google.picker.Response.DOCUMENTS][0];
+      url = doc[window.google.picker.Document.URL];
+    }
+    document.getElementById('result').innerText = `You picked: ${url}`;
+  };
+  
+ 
+
+    // Function to handle the loading of picker API
+  //   const onPickerApiLoad = () => {
+  //     setPickerInited(true);
+  //   };
+
+  //   // Function to handle the initialization of GSI (Google Sign-In)
+  //   const gisLoaded = () => {
+  //     // TODO: Replace 'CLIENT_ID' and 'SCOPES' with your actual client ID and scopes.
+  //     tokenClient = window.google.accounts.oauth2.initTokenClient({
+  //       client_id: '414452798257-2upm2aj9ai85a3ttccnhj9n5b1lq8lod.apps.googleusercontent.com',
+  //       scope: 'https://www.googleapis.com/auth/drive.readonly',
+  //       callback: '', // defined later
+  //     });
+  //     setGisInited(true);
+  //   };
+
+  //   // Check if the Google API script is already loaded, otherwise load it.
+  //   if (!window.gapi) {
+  //     const script = document.createElement('script');
+  //     script.src = 'https://apis.google.com/js/api.js';
+  //     script.async = true;
+  //     script.defer = true;
+  //     script.onload = onPickerApiLoad;
+  //     document.body.appendChild(script);
+  //   } else {
+  //     onPickerApiLoad(); // Call if script is already loaded
+  //   }
+
+  //   // Check if the GSI script is already loaded, otherwise load it.
+  //   if (!window.google || !window.google.accounts) {
+  //     const gsiScript = document.createElement('script');
+  //     gsiScript.src = 'https://accounts.google.com/gsi/client';
+  //     gsiScript.async = true;
+  //     gsiScript.defer = true;
+  //     gsiScript.onload = gisLoaded;
+  //     document.body.appendChild(gsiScript);
+  //   } else {
+  //     gisLoaded(); // Call if GSI script is already loaded
+  //   }
+  // }
+    // Clean up: Remove the scripts when the component unmounts
+   
+
+//   try {
+//     if (!isGapiLoaded) {
+//       console.log("Attempting to load Google API client...");
+//       await loadGoogleClient();
+//     }
+
+//     while (!isGapiLoaded) {
+//       console.log("Waiting for gapi to load...");
+//       await new Promise(resolve => setTimeout(resolve, 100)); // Wait for 100ms before checking again
+//     }
+
+//     console.log("Google API client loaded successfully!");
+
+//     // Check explicitly before initialization
+//     if (!window.gapi || !window.gapi.client) {
+//       throw new Error('gapi or gapi.client is not available');
+//     }
+
+//     console.log("Initializing Google client...");
+//     await initClient();
+
+//     if (!window.gapi.auth2.getAuthInstance().isSignedIn.get()) {
+//       console.log("User not signed in. Signing in...");
+//       await window.gapi.auth2.getAuthInstance().signIn();
+//     }
+
+//     console.log("Fetching files...");
+//     await listAndFetchDriveFiles();
+
+//   } catch (error) {
+//     console.error('Error:', error);
+//   }
+// };
+
+// const loadGoogleClient = () => {
+//   return new Promise((resolve, reject) => {
+//     const script = document.createElement('script');
+//     script.src = 'https://apis.google.com/js/api.js';
+//     script.onload = () => {
+//       isGapiLoaded = true; // Update the flag to indicate that gapi is loaded
+//       resolve();
+//     };
+//     script.onerror = (error) => {
+//       reject(error);
+//     };
+//     document.body.appendChild(script);
+//   });
+// };
+
+// const initClient = async () => {
+//   try {
+//     await window.gapi.client.init({
+//       apiKey: API_KEY,
+//       clientId: CLIENT_ID,
+//       discoveryDocs: DISCOVERY_DOCS,
+//       scope: SCOPES
+//     });
+
+//   } catch (error) {
+//     console.error('Error initializing Google client:', error);
+//     throw error;
+//   }
+// };
+
+// const listAndFetchDriveFiles = async () => {
+//   try {
+//     // Ensure that the Google client is initialized
+//     if (!window.gapi.client || !window.gapi.client.drive) {
+//       throw new Error('Google client is not initialized');
+//     }
+
+//     const response = await window.gapi.client.drive.files.list({
+//       fields: 'files(id, name)',
+//     });
+
+//     const files = response.result.files;  // Use `result` to access the response data
+//     if (files && files.length > 0) {
+//       console.log('Files:');
+//       files.forEach((file) => {
+//         console.log(`${file.name} (${file.id})`);
+//         // Fetch the file if it matches the desired name
+//         if (file.name === 'YourDesiredFileName') {
+//           fetchDriveFile(file.id);
+//         }
+//       });
+//     } else {
+//       console.log('No files found.');
+//     }
+//   } catch (error) {
+//     console.error('Error listing files:', error);
+//   }
+// };
+
+// const fetchDriveFile = async (fileId) => {
+//   try {
+//     const response = await axios({
+//       method: 'GET',
+//       url: `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,
+//       headers: {
+//         Authorization: `Bearer ${window.gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().access_token}`,
+//         'Content-Type': 'application/json',
+//       },
+//       responseType: 'blob'
+//     });
+
+//     const fileBlob = response.data;
+//     console.log(fileBlob);
+
+//   } catch (error) {
+//     console.error('Error fetching file:', error);
+//   }
+// };
        
     //     gapi.client.setApiKey("AIzaSyDV8GcHfZqQBxLZdo6evrfjhsqMRftqhTA");
     //     gapi.client.load("https://content.googleapis.com/discovery/v1/apis/discovery/v1/rest")
@@ -457,18 +713,18 @@ const Verification=()=>{
     //     // Open the Google Picker
     //     picker.setVisible(true);
     //   });
-        openPicker({
-            clientId:"414452798257-2upm2aj9ai85a3ttccnhj9n5b1lq8lod.apps.googleusercontent.com",
-            developerKey:"AIzaSyDV8GcHfZqQBxLZdo6evrfjhsqMRftqhTA",
-            token:"ya29.a0AfB_byBe44shdL2d-Ua2fug48GgWam4GyxsVRIt3rkWYFeT5jdNbqguDDnC286itWMV0z71Mwyom2gOS0efyoWLdRH8JKbhw6X04nAk3iVOmvArLoW9G3BfeL7FNRv5RHeSBWdwmAEs6dFN3ZepFX6GSnAzYeFF9ZC9SaCgYKAWQSARMSFQHGX2Mi-q5shPVQK4TaI4qmFQHfZA0171",
-            viewId:"DOCS",
-            showUploadView:true,
-            showUploadFolders:true,
-            supportDrives:true,
-            multiselect:true
-        })
+    //     openPicker({
+    //         clientId:"414452798257-2upm2aj9ai85a3ttccnhj9n5b1lq8lod.apps.googleusercontent.com",
+    //         developerKey:"AIzaSyDV8GcHfZqQBxLZdo6evrfjhsqMRftqhTA",
+            
+    //         viewId:"DOCS",
+    //         showUploadView:true,
+    //         showUploadFolders:true,
+    //         supportDrives:true,
+    //         multiselect:true
+    //     })
        
-    }
+    // }
   //   gapi.load('client', function() {
   //     gapi.client.init({
   //       apiKey: 'AIzaSyDV8GcHfZqQBxLZdo6evrfjhsqMRftqhTA',
@@ -601,17 +857,19 @@ return(
     <label className="flex justify-center font-sans mt-2">
       Gdrive
     </label>
-                <div className="flex justify-center mt-1">
-                 
-                    <Link onClick={handleClick}><img src="https://th.bing.com/th/id/OIP.lgdmCc6UHAWc27h0o4tSbwHaHa?rs=1&pid=ImgDetMain" height="50" width="50"/></Link>
-                </div>
+                
+                <div className="flex justify-center mt-4"><p className="text-red-500 text-sm font-serif">{passportData.message}</p></div>
                 <div className="flex justify-center mt-6 mb-4">
-                <div className=""><p className="text-red-500 text-sm">{passportData.message}</p></div>
-                <button class="flex-shrink-0 bg-teal-500 hover:bg-teal-700 border-teal-500 hover:border-teal-700 text-sm border-4 text-white py-1 px-5 rounded" type="submit">
+                
+                <button class={`flex-shrink-0 bg-teal-500 hover:bg-teal-700 border-teal-500 hover:border-teal-700 text-sm border-4 text-white py-1 px-5 rounded ${!valid ? 'opacity-50 cursor-not-allowed hover:none' : ''}`} type="submit" disabled={!valid}>
                     Verify
                 </button>
                 </div>
             </form> 
+            <div className="flex justify-center mt-1">
+                 
+                    <button onClick={handleClick}><img src="https://th.bing.com/th/id/OIP.lgdmCc6UHAWc27h0o4tSbwHaHa?rs=1&pid=ImgDetMain" height="50" width="50" type="button"/></button>
+                </div>
         </div>
         <Footer/>
     </div>

@@ -1,11 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { logout } from "./Auth";
 
 export const verifyPassport=createAsyncThunk("verifyPassport", async(fdata,{rejectWithValue})=>{
     const response=await fetch("http://localhost:4700/v1/api/verify",{
         method:"POST",
-        headers:{
-            "Content-Type":"multipart/form-data",  
-        },
+        
         body:fdata
     });
     try{
@@ -29,11 +28,14 @@ const verifySlice=createSlice({
         })
         .addCase(verifyPassport.fulfilled,(state,action)=>{
             state.isLoading=false;
-            state.PassportData.push(action.payload);
+            state.PassportData=(action.payload);
         })
         .addCase(verifyPassport.rejected,(state,action)=>{
             state.isLoading=false;
             state.error=action.payload;
+        })
+        .addCase(logout.fulfilled,(state)=>{
+            state.PassportData=[];
         })
     }
 })

@@ -14,17 +14,20 @@ const Register=()=>{
     const [message3,setMessage3]=useState();
     const [message4,setMessage4]=useState();
     const [valid,setValid]=useState(true);
+    const [valid1,setValid1]=useState(true);
     const regEx1=/^[a-zA-Z]+$/;
     const handleChange1=(e)=>{
         setData({ ...data, [e.target.name]: e.target.value });
         if(regEx1.test(data.firstName))
         {
           setMessage1("")
+          setValid1(true);
         }
         
         else if(!regEx1.test(data.firstName))
         {
           setMessage1("First Name is not valid")
+          setValid1(false);
         }
         else{
           setMessage1("");
@@ -35,11 +38,13 @@ const Register=()=>{
         if(regEx1.test(data.lastName))
         {
           setMessage2("")
+          setValid1(true);
         }
         
         else if(!regEx1.test(data.lastName))
         {
           setMessage2("Last Name is not valid")
+          setValid1(false);
         }
         else{
           setMessage2("");
@@ -51,10 +56,12 @@ const Register=()=>{
         if(rgExp.test(data.email))
         {
           setMessage3("")
+          setValid1(true);
         }
         else if(!rgExp.test(data.email))
         {
           setMessage3("Email is not valid")
+          setValid1(false);
         }
         else{
           setMessage3("");
@@ -66,11 +73,13 @@ const Register=()=>{
         if(regEx2.test(data.phoneNumber))
         {
           setMessage4("")
+          setValid1(true);
         }
         
         else if(!regEx2.test(data.phoneNumber))
         {
           setMessage4("Number is not valid")
+          setValid1(false);
         }
         else{
           setMessage4("");
@@ -79,17 +88,28 @@ const Register=()=>{
     const handleChange=(e)=>{
         setData({...data,[e.target.name]:e.target.value})
         setValid(
-            data.password.length >= 8 &&
+            
             /[a-z]/.test(data.password) && 
             /[A-Z]/.test(data.password) && 
-            /[0-9]/.test(data.password)   
+            /[0-9]/.test(data.password)  &&
+            data.password.length >= 8  
           );
+          if(/[a-z]/.test(data.password) && 
+          /[A-Z]/.test(data.password) && 
+          /[0-9]/.test(data.password)  &&
+          data.password.length >= 8){
+            setValid1(true);
+          }
+          else setValid1(false);
     }
     const handleSubmit=(e)=>{
         e.preventDefault();
         console.log(data);
         dispatch(registerUser(data));
-        navigate("/login");
+        setTimeout(()=>{
+          navigate("/login");
+        },1000)
+        
     }
 return(
 <div className="bg-gradient-to-br from-gray-300 to-gray-100 w-full py-1">
@@ -135,7 +155,7 @@ return(
                 }
                 
                 <div className="flex justify-center mt-8 mb-4">
-                <button class="flex-shrink-0 bg-teal-500 hover:bg-teal-700 border-teal-500 hover:border-teal-700 text-sm border-4 text-white py-1 px-2 rounded" type="submit">
+                <button class={`flex-shrink-0 bg-teal-500 hover:bg-teal-700 border-teal-500 hover:border-teal-700 text-sm border-4 text-white py-1 px-2 rounded  ${!valid1 ? 'opacity-50 cursor-not-allowed hover:none' : ''}`} type="submit" disabled={!valid1}>
                     Sign Up
                 </button>
                 </div>

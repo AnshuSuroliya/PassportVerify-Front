@@ -10,7 +10,7 @@ const Login=()=>{
     const navigate=useNavigate();
     const [data,setData]=useState({});
     const loginData=useSelector((state)=>state.register.loginData);
-    const [valid,setValid]=useState(false);
+    const [valid,setValid]=useState(true);
     const[message,setMessage]=useState("");
     const checkValidation=(e)=>{
         const rgExp=/^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/
@@ -18,11 +18,13 @@ const Login=()=>{
         if(rgExp.test(data.email))
         {
           setMessage("")
+          setValid(true);
         }
         
         else if(!rgExp.test(data.email))
         {
           setMessage("Email is not valid")
+          setValid(false);
         }
         else{
           setMessage("");
@@ -74,7 +76,7 @@ const Login=()=>{
                     <p className="text-green-500">{loginData.message}</p>
                     </div>
                     <div className="flex justify-center mt-2">
-                <button className="flex-shrink-0 bg-teal-500 hover:bg-teal-700 border-teal-500 hover:border-teal-700 text-sm border-4 text-white py-1 px-2 rounded" type="submit">
+                <button className={`flex-shrink-0 bg-teal-500 hover:bg-teal-700 border-teal-500 hover:border-teal-700 text-sm border-4 text-white py-1 px-2 rounded ${!valid ? 'opacity-50 cursor-not-allowed hover:none' : ''}`} type="submit" disabled={!valid}>
                     Sign In
                 </button>
                 </div>
